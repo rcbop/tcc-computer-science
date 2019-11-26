@@ -1,4 +1,4 @@
-# AWS playbook
+  # AWS playbook
 ---
 
 - hosts: localhost
@@ -8,6 +8,7 @@
   vars:
     key_name: aws_key
     region: us-east-2
+    key_path: ~/.ssh/my_aws
     # https://cloud-images.ubuntu.com/locator/ec2/
     image: ami-0f93b5fd8f220e428 
     id: "web-app"
@@ -17,7 +18,7 @@
     - name: Facts
       block:
       - name: Set de Facts do playbook
-        ec2_instance_facts:
+        ec2_instance_info:
           aws_access_key: "{{ ec2_access_key }}"
           aws_secret_key: "{{ ec2_secret_key }}"
           region: "{{ region }}"
@@ -46,8 +47,8 @@
           name: "{{ sec_group }}"
           description: "Sec group for app {{ id }}"
           region: "{{ region }}"
-          aws_access_key: "{{ec2_access_key}}"
-          aws_secret_key: "{{ec2_secret_key}}"
+          aws_access_key: "{{ ec2_access_key }}"
+          aws_secret_key: "{{ ec2_secret_key }}"
           rules:
             - proto: tcp
               ports:
