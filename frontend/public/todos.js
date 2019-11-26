@@ -1,7 +1,10 @@
 /* global angular */
 var app = angular.module('app', ['ngResource'])
-app.controller('TodoCtrl', function($scope, $resource) {
+app.controller('TodoCtrl', [ '$scope', '$resource', '$window', function($scope, $resource, $window) {
+  var landingURL = $window.location.host
+  // var Todo = $resource(landingURL + '/api/v1/todos/:id', { id: '@_id' })
   var Todo = $resource('/api/v1/todos/:id', { id: '@_id' })
+  
   $scope.todos = Todo.query()
 
   $scope.addTodo = function() {
@@ -34,4 +37,4 @@ app.controller('TodoCtrl', function($scope, $resource) {
 
     Todo.delete({ done: true })
   }
-})
+}])

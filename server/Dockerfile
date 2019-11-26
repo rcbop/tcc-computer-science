@@ -1,6 +1,7 @@
 FROM node:alpine
 RUN mkdir /app
 WORKDIR /app
-COPY src .
-ENTRYPOINT ["node"]
-CMD ["/app/index.js"]
+COPY . .
+RUN npm install
+ENTRYPOINT ["/app/wait-for.sh"]
+CMD ["npm", "start"]
