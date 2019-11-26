@@ -7,14 +7,11 @@ var bodyParser = require('body-parser')
 var methodOverride = require('method-override')
 var cors = require('cors')
 var mongoose = require('mongoose')
-var helmet = require('helmet')
-
+var morgan = require('morgan')
 
 var mongoHost = process.env.MONGO_HOST
 
-mongoose.connect('mongodb://' + mongoHost + '/todos', {
-  // useMongoClient: true
-})
+mongoose.connect('mongodb://' + mongoHost + '/todos')
 
 var ToDoSchema = new mongoose.Schema({
   text: { type: String, required: true },
@@ -23,23 +20,20 @@ var ToDoSchema = new mongoose.Schema({
 var ToDoModel = mongoose.model('ToDo', ToDoSchema)
 
 var app = express()
-app.use(cors());
+var router = express.Router()
 
-app.use(helmet.contentSecurityPolicy({
-  directives: {
-    // defaultSrc: ["'self'", "data:"]
-    defaultSrc: ["*"]
-  }
-}));
+router.use(bodyParser.json())
+router.use(methodOverride())
+router.use(morgan('combined'));
+router.use(cors());
+
+restify.serve(router, ToDoModel)
+router.use('/', router);
 
 app.set('port', process.env.PORT || 3000)
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(bodyParser.json())
-app.use(methodOverride('X-HTTP-Method-Override'))
-restify.serve(app, ToDoModel, {
-  // exclude: 'text,done'
-})
 
 http.createServer(app).listen(app.get('port'), function() {
   console.log('Express server listening on port ' + app.get('port'))
+  console.log('displaying routes');
+  console.log(router.stack);
 })
