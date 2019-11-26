@@ -1,0 +1,14 @@
+{
+  "name": "example-web-server",
+  "version": "1.0.0",
+  "description": "example web server to be used in an academic project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rogerio Peixoto",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
