@@ -1,0 +1,11 @@
+- hosts: jenkins
+  vars:
+    jenkins_hostname: ec2-18-191-246-84.us-east-2.compute.amazonaws.com
+    jenkins_plugins_install_dependencies: true
+    jenkins_admin_username: admin
+    jenkins_admin_password: rogerman
+    jenkins_home: /var/lib/jenkins
+
+  roles:
+    - role: geerlingguy.jenkins
+      become: yes
