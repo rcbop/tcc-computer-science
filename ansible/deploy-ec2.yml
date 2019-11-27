@@ -33,11 +33,10 @@
 
     - name: Provisioning EC2 instances
       block:
-
       - name: Upload public key to AWS
         ec2_key:
           name: "{{ key_name }}"
-          key_material: "{{ lookup('file', '{{ key_path }}/{{ key_name }}.pub') }}"
+          key_material: "{{ lookup('file', '{{ key_path }}.pub') }}"
           region: "{{ region }}"
           aws_access_key: "{{ ec2_access_key }}"
           aws_secret_key: "{{ec2_secret_key }}"
