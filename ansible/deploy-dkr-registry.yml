@@ -1,0 +1,6 @@
+- hosts: jenkins
+  tasks:
+  - name: Registry mnt dir
+    command: mkdir -p /mnt/registry
+  - name: Install aptitude using apt
+    command: docker run -d -p 5000:5000 --restart=always --name registry -v /mnt/registry:/var/lib/registry registry:2
