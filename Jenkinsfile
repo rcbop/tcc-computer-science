@@ -1,8 +1,4 @@
-// env.CONTAINER_NAME = "${env.JOB_NAME}".split('/')[1..2].join('-')
-// env.DOCKER_IMAGE = "${env.JOB_NAME}".split('/')[1]
-// env.DOCKER_TAG = "${env.JOB_NAME.split('/').last()}-${env.BUILD_NUMBER}"
-// env.DOCKER_REGISTRY_REPOSITORY = ''
-// env.REGISTRY_CREDENTIAL_ID = ''
+
 
 String cronString = env.BRANCH_NAME == "master" ? "H/2 * * * *" : ""
 
@@ -10,7 +6,7 @@ pipeline {
     agent { 
         docker {
             image 'exemplo-cicd-slave:latest'
-            args '--group-add 999 --user jenkins -v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker'
+            args '--group-add 999 -u 112:112 -v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker'
         }
     }
 
