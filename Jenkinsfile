@@ -10,7 +10,7 @@ pipeline {
         docker {
             image 'exemplo-cicd-slave:latest'
             args '--group-add 999 -u 112:112 -v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker'
-            reuseNode true
+            // reuseNode true
         }
     }
 
