@@ -47,78 +47,78 @@ pipeline {
             }
         }
 
-        stage('Test Image') {
-            steps {
-                script {
-                    docker.image('mongo').withRun(){ db ->
-                        app.inside("""
-                            -e MONGODB_HOST=mongo \
-                            -e APP_ENV=staging \
-                            --link ${db.id}:mongo
-                            """)
-                        {
-                            sh 'npm run functional-tests'
-                            junit '**/results/*.xml'
-                        }
-                    }
-                }
-            }
-        }
+        // stage('Test Image') {
+        //     steps {
+        //         script {
+        //             docker.image('mongo').withRun(){ db ->
+        //                 app.inside("""
+        //                     -e MONGODB_HOST=mongo \
+        //                     -e APP_ENV=staging \
+        //                     --link ${db.id}:mongo
+        //                     """)
+        //                 {
+        //                     sh 'npm run functional-tests'
+        //                     junit '**/results/*.xml'
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
-        stage('Docker image publish') {
-            steps {
-                script {
-                    def version = readFile('server/VERSION')
-                    def versions = version.split('\\.')
-                    def major = versions[0]
-                    def minor = versions[0] + '.' + versions[1]
+        // stage('Docker image publish') {
+        //     steps {
+        //         script {
+        //             def version = readFile('server/VERSION')
+        //             def versions = version.split('\\.')
+        //             def major = versions[0]
+        //             def minor = versions[0] + '.' + versions[1]
 
-                    echo '>>>> Publishing new version to docker registry'
-                    withCredentials(
-                        [
-                            usernamePassword(
-                                credentialsId: 'dkr-registry-pass',
-                                passwordVariable: 'DKR_USER',
-                                usernameVariable: 'DKR_PASS'
-                            )
-                        ]
-                    )
-                    {
-                        docker.withRegistry(
-                            "${DOCKER_REGISTRY_REPOSITORY}",
-                            "${REGISTRY_CREDENTIAL_ID}"
-                        ) 
-                        {
-                            if (env.BRANCH_NAME == 'master') {
-                                apiImage.push()
-                                apiImage.push(major)
-                                apiImage.push(minor)
-                                apiImage.push(patch)
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        //             echo '>>>> Publishing new version to docker registry'
+        //             withCredentials(
+        //                 [
+        //                     usernamePassword(
+        //                         credentialsId: 'dkr-registry-pass',
+        //                         passwordVariable: 'DKR_USER',
+        //                         usernameVariable: 'DKR_PASS'
+        //                     )
+        //                 ]
+        //             )
+        //             {
+        //                 docker.withRegistry(
+        //                     "${DOCKER_REGISTRY_REPOSITORY}",
+        //                     "${REGISTRY_CREDENTIAL_ID}"
+        //                 ) 
+        //                 {
+        //                     if (env.BRANCH_NAME == 'master') {
+        //                         apiImage.push()
+        //                         apiImage.push(major)
+        //                         apiImage.push(minor)
+        //                         apiImage.push(patch)
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
-        stage("Load configuration") {
-            steps {
-                script {
-                    echo '>>>> Loading configuration'
-                    loadEnvironmentVariables('server/env/dev')
-                }
-            }
-        }
+        // stage("Load configuration") {
+        //     steps {
+        //         script {
+        //             echo '>>>> Loading configuration'
+        //             loadEnvironmentVariables('server/env/dev')
+        //         }
+        //     }
+        // }
 
-        stage("Docker deploy"){
-            steps {
-                script {
-                    if (env.BRANCH_NAME == 'master') {
-                        echo 'production deployment'
-                    }
-                }
-            }
-        }
+        // stage("Docker deploy"){
+        //     steps {
+        //         script {
+        //             if (env.BRANCH_NAME == 'master') {
+        //                 echo 'production deployment'
+        //             }
+        //         }
+        //     }
+        // }
     }
 }
 

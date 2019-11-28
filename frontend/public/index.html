@@ -79,6 +79,10 @@
 				align-items: stretch;
 				flex-direction: column;
 			}
+			
+			span {
+				display: none;
+			}
 
 			a {
 				margin: 10px;
@@ -89,6 +93,10 @@
 			.content {
 				align-items: stretch;
 				flex-direction: column;
+			}
+
+			span {
+				display: none;
 			}
 
 			a {
@@ -105,18 +113,17 @@
 	<main class="main">
 		<div class="content">
 			<a href="ppt.html" type="submit" class="btn btn-warning"><i class="fa fa-fw fa-file-powerpoint-o"></i>
-				Apresentação</a>
+				<span>	Apresentação</span></a>
 			<a href="doc.html" type="submit" class="btn btn-warning"><i class="fa fa-fw fa-file-word-o"></i>
-				Monografia</a>
+				<span>	Monografia</span></a>
 			<a href="todo.html" type="submit" class="btn btn-warning"><img class="custom-ico white-ico"
-					src="./icons/aws-brands.svg" /> Aplicação Exemplo</a>
+					src="./icons/aws-brands.svg" /><span> Aplicação Exemplo</span></a>
 			<a href="http://ec2-3-14-229-209.us-east-2.compute.amazonaws.com:8080" type="submit"
 				class="btn btn-warning"><img class="custom-ico white-ico" src="./icons/jenkins-brands.svg" />
-				Jenkins</a>
+				<span>	Jenkins</span></a>
 		</div>
 	</main>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" type="text/javascript"></script>
-	<!-- <script src="https://kit.fontawesome.com/4dcce48223.js" crossorigin="anonymous"></script> -->
 </body>
 
 </html>
