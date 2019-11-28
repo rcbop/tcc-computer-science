@@ -1,4 +1,18 @@
+env.REGISTRY_HOST="localhost"
+env.REGISTRY_PORT="5000"
+env.REGISTRY_ADDRESS="${env.REGISTRY_HOST}:${env.REGISTRY_PORT}"
+env.IMAGE_NAME="exemplo-cicd-slave"
 node {
-    checkout scm
-    sh 'docker build -t exemplo-cicd-slave:latest jenkins-slave/'
+    stage("Checkout") {
+        checkout scm
+    }
+
+    stage("Build image"){
+        sh "docker build -t ${IMAGE_NAME}:latest jenkins-slave/"
+    }
+
+    stage("Publish to registry") {
+        sh "docker tag ${IMAGE_NAME}:latest ${env.REGISTRY_ADDRESS}/${IMAGE_NAME}:latest"
+        sh "docker push ${env.REGISTRY_ADDRESS}/${IMAGE_NAME}:latest"
+    }
 }
