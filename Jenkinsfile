@@ -3,6 +3,7 @@
 env.AWSCLI_PROFILE=''
 
 String cronString = env.BRANCH_NAME == "master" ? "H/2 * * * *" : ""
+def apiImage
 
 pipeline {
     agent { 
@@ -35,7 +36,7 @@ pipeline {
                 script {
                     echo '>>>> Building docker image'
                     sh 'ls -la'
-                    def apiImage = docker.build(
+                    apiImage = docker.build(
                         'example-rest-api:latest',
                         'server/'
                     )
