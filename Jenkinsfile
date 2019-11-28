@@ -49,6 +49,8 @@ pipeline {
             steps {
                 script {
                     docker.image('mongo').withRun(){ db ->
+                        echo 'inside mongo db'
+                        sh 'ls -la'
                         apiImage.inside("""
                             -e MONGODB_HOST=mongo \
                             -e APP_ENV=staging \
