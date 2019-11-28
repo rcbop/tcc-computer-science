@@ -36,7 +36,7 @@ pipeline {
             steps {
                 script {
                     echo '>>>> Building docker image'
-                    sh 'ls -la && whoami'
+                    sh 'ls -la'
                     def apiImage = docker.build(
                         'example-rest-api:latest',
                         'server/'
@@ -45,23 +45,24 @@ pipeline {
             }
         }
 
-        // stage('Test Image') {
-        //     steps {
-        //         script {
-        //             docker.image('mongo').withRun(){ db ->
-        //                 app.inside("""
-        //                     -e MONGODB_HOST=mongo \
-        //                     -e APP_ENV=staging \
-        //                     --link ${db.id}:mongo
-        //                     """)
-        //                 {
-        //                     sh 'npm run functional-tests'
-        //                     junit '**/results/*.xml'
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Test Image') {
+            steps {
+                script {
+                    docker.image('mongo').withRun(){ db ->
+                        app.inside("""
+                            -e MONGODB_HOST=mongo \
+                            -e APP_ENV=staging \
+                            --link ${db.id}:mongo
+                            """)
+                        {
+                            echo 'Unit tests'
+                            // sh 'npm run functional-tests'
+                            junit '**/results/*.xml'
+                        }
+                    }
+                }
+            }
+        }
 
         // stage('Docker image publish') {
         //     steps {

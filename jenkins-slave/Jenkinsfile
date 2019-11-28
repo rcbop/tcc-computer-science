@@ -1,0 +1,3 @@
+node {
+    sh 'docker build -t exemplo-cicd-slave:latest .'
+}
