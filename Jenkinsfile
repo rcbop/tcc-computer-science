@@ -36,6 +36,7 @@ pipeline {
             steps {
                 script {
                     echo '>>>> Building docker image'
+                    sh 'ls -la'
                     def apiImage = docker.build(
                         'example-rest-api:latest',
                         'server/Dockerfile'
