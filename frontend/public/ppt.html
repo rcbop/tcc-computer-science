@@ -5,51 +5,63 @@
     <meta charset="UTF-8">
     <title>Apresentação</title>
     <style type="text/css">
-        body,
-        html {
+
+        body {
+			background-color: #dedede;
+			height: 100%;
+		}
+
+		html {
+			height: 100%;
+		}
+
+        .header {
+			position: fixed;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			top: 0;
+			left: 0;
+			width: 100%;
+			background-color: #17a2b8;
+			height: 60px;
+		} span {
+			color: white;
+			font-size: 16px;
+		}
+
+		.main {
+			margin: 85px 0 0 0;
+			height: 100%;
             width: 100%;
-            height: 100%;
-            margin: 0;
-            padding: 0
-        }
+		}
 
-        .first-row {
-            display: block;
-            position: absolute;
-            text-align: center;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-        }
-
-        .second-row {
-            position: absolute;
-            top: 100px;
-            left: 0;
-            right: 0;
-            bottom: 0;
-        }
-
-        .second-row iframe {
-            display: block;
+        iframe {
             width: 100%;
-            height: 100%;
-            border: none;
+            height: 85%;
         }
+        
+		@media(max-width: 375px) {
+			.content {
+				align-items: stretch;
+				flex-direction: column;
+			} a {
+				margin: 2px;
+			}
+		}
     </style>
 </head>
 
 <body>
-    <div class="first-row">
-        <h2>Apresentação TCC Rogério Peixoto</h2>
-    </div>
-    <div class="second-row">
+    <header class="header">
+            <span><b>Apresentação Rogério Peixoto</b></span>
+    </header>
+    <main class="main">
         <iframe
             src="https://onedrive.live.com/embed?cid=68E5C3F5C545E45F&resid=68E5C3F5C545E45F%211637&authkey=APk-VA_1IWX7Kj0&em=2"
             frameborder="1" scrolling="no">
         </iframe>
-    </div>
+    </main>
 </body>
 
 </html>
