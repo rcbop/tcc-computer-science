@@ -1,4 +1,6 @@
-
+// override default profile for aws cli
+// ec2 should use role to deploy
+env.AWSCLI_PROFILE=''
 
 String cronString = env.BRANCH_NAME == "master" ? "H/2 * * * *" : ""
 
@@ -45,7 +47,7 @@ pipeline {
             steps {
                 script {
                     docker.image('mongo').withRun(){ db ->
-                        app.inside("""
+                        apiImage.inside("""
                             -e MONGODB_HOST=mongo \
                             -e APP_ENV=staging \
                             --link ${db.id}:mongo
@@ -103,6 +105,10 @@ pipeline {
         //             loadEnvironmentVariables('server/env/dev')
         //         }
         //     }
+        // }
+
+        // stage('Deploy frontend') {
+        //     sh './deploy-frontend.sh'
         // }
 
         // stage("Docker deploy"){
