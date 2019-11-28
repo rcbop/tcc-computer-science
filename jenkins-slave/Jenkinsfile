@@ -1,3 +1,4 @@
 node {
+    checkout scm
     sh 'docker build -t exemplo-cicd-slave:latest .'
 }
