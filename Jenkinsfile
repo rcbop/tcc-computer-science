@@ -10,7 +10,7 @@ pipeline {
     agent { 
         docker {
             image 'jenkins/slave'
-            args '-v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker'
+            args '--group-add 999 --user jenkins -v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker'
         }
     }
 
