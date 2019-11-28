@@ -1,8 +1,8 @@
-env.CONTAINER_NAME = "${env.JOB_NAME}".split('/')[1..2].join('-')
-env.DOCKER_IMAGE = "${env.JOB_NAME}".split('/')[1]
-env.DOCKER_TAG = "${env.JOB_NAME.split('/').last()}-${env.BUILD_NUMBER}"
-env.DOCKER_REGISTRY_REPOSITORY = ''
-env.REGISTRY_CREDENTIAL_ID = ''
+// env.CONTAINER_NAME = "${env.JOB_NAME}".split('/')[1..2].join('-')
+// env.DOCKER_IMAGE = "${env.JOB_NAME}".split('/')[1]
+// env.DOCKER_TAG = "${env.JOB_NAME.split('/').last()}-${env.BUILD_NUMBER}"
+// env.DOCKER_REGISTRY_REPOSITORY = ''
+// env.REGISTRY_CREDENTIAL_ID = ''
 
 String cronString = env.BRANCH_NAME == "master" ? "H/2 * * * *" : ""
 
@@ -29,9 +29,6 @@ pipeline {
         stage("Checkout code"){
             steps {
                 checkout scm
-                script {
-                    def gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
-                }
             }
         }
 
@@ -122,11 +119,11 @@ pipeline {
     }
 }
 
-def loadEnvironmentVariables(path){
-    def props = readProperties file: path
-    keys = props.keySet()
-    for(key in keys) {
-        value = props["${key}"]
-        env."${key}" = "${value}"
-    }
-}
+// def loadEnvironmentVariables(path){
+//     def props = readProperties file: path
+//     keys = props.keySet()
+//     for(key in keys) {
+//         value = props["${key}"]
+//         env."${key}" = "${value}"
+//     }
+// }
