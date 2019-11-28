@@ -9,7 +9,7 @@ String cronString = env.BRANCH_NAME == "master" ? "H/2 * * * *" : ""
 pipeline {
     agent { 
         docker {
-            image 'jenkins/slave'
+            image 'exemplo-cicd-slave:latest'
             args '--group-add 999 --user jenkins -v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker'
         }
     }
