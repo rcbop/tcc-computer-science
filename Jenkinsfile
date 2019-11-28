@@ -39,7 +39,7 @@ pipeline {
                     sh 'ls -la'
                     def apiImage = docker.build(
                         'example-rest-api:latest',
-                        'server/Dockerfile'
+                        'server/'
                     )
                 }
             }
