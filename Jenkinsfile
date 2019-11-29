@@ -5,7 +5,8 @@ env.DOCKER_IMAGE='example-rest-api'
 env.DOCKER_TAG='latest'
 env.DOCKER_FULL_NAME="${env.DOCKER_IMAGE}:${env.DOCKER_TAG}"
 env.DOCKER_REGISTRY_REPOSITORY="172.17.0.1:5000/${env.DOCKER_FULL_NAME}"
-env.ECR_REGISTRY_ADDRESS="949998518335.dkr.ecr.us-east-2.amazonaws.com/"
+env.AWS_REGION='us-east-2'
+env.ECR_REGISTRY_ADDRESS="949998518335.dkr.ecr.${env.AWS_REGION}.amazonaws.com/"
 
 String cronString = env.BRANCH_NAME == "master" ? "H/2 * * * *" : ""
 def apiImage
@@ -88,18 +89,18 @@ pipeline {
                     echo '>>>> Creating AWS ECR registry if does not exists'
 
                     def queryRepo = sh(
-                        script: "aws ecr describe-repositories --region us-east-2 | jq '.repositories[].repositoryName' | grep ${env.JOB_NAME}",
+                        script: "aws ecr describe-repositories --region ${env.AWS_REGION} | jq '.repositories[].repositoryName' | grep ${env.JOB_NAME}",
                         returnStatus: true
                     )
                     if (queryRepo.toInteger() != 0) {
-                        sh "aws ecr create-repository --repository-name ${env.JOB_NAME}"
+                        sh "aws ecr create-repository --region ${env.AWS_REGION} --repository-name ${env.JOB_NAME}"
                     }
 
                     echo '>>>> Publishing new version to private AWS docker registry'
 
                     sh """
                     set +x
-                    \$(aws ecr get-login --no-include-email --region us-east-2) 2>/dev/null
+                    \$(aws ecr get-login --no-include-email --region ${env.AWS_REGION}) 2>/dev/null
                     set -x
                     docker tag ${env.DOCKER_FULL_NAME} ${env.ECR_REGISTRY_ADDRESS}/${env.DOCKER_FULL_NAME}
                     docker push ${env.ECR_REGISTRY_ADDRESS}/${env.DOCKER_FULL_NAME}
@@ -131,14 +132,14 @@ pipeline {
                     if (branch == 'master') {
                         echo 'deploying elastic beanstalk'
                         def queryCode = sh(
-                            script: "aws elasticbeanstalk describe-applications --output json --region us-east-2 | jq -r '.Applications[].ApplicationName' | grep ${env.JOB_NAME}",
+                            script: "aws elasticbeanstalk describe-applications --output json --region ${env.AWS_REGION} | jq -r '.Applications[].ApplicationName' | grep ${env.JOB_NAME}",
                             returnStatus: true
                         )
                         if (queryCode.toInteger() != 0) {
                             sh """
                             cd server
-                            eb init -p docker ${env.JOB_NAME} --region us-east-2
-                            eb create --scale 1 ${branch} --region us-east-2
+                            eb init -p docker ${env.JOB_NAME} --region ${env.AWS_REGION}
+                            eb create --scale 1 ${branch} --region ${env.AWS_REGION}
                             """
                         } else {
                             sh """
