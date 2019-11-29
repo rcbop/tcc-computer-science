@@ -109,7 +109,7 @@ pipeline {
                         echo 'deploying elastic beanstalk'
                         def queryCode = sh(
                             script: "aws elasticbeanstalk describe-applications --output json --region us-east-2 | jq -r '.Applications[].ApplicationName' | grep ${env.JOB_NAME}",
-                            returnStdout: true
+                            returnStatus: true
                         )
                         if (queryCode.toInteger() != 0) {
                             sh "eb init -p docker ${env.JOB_NAME}"
