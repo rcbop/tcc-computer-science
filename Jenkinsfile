@@ -99,9 +99,9 @@ pipeline {
                     echo '>>>> Publishing new version to private AWS docker registry'
 
                     sh """
-                    set +x
-                    \$(aws ecr get-login --no-include-email --region ${env.AWS_REGION}) 2>/dev/null
-                    set -x
+                    
+                    \$(aws ecr get-login --no-include-email --region ${env.AWS_REGION})
+                    
                     docker tag ${env.DOCKER_FULL_NAME} ${env.ECR_REGISTRY_ADDRESS}/${env.DOCKER_FULL_NAME}
                     docker push ${env.ECR_REGISTRY_ADDRESS}/${env.DOCKER_FULL_NAME}
                     """
