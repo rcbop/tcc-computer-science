@@ -1,7 +1,7 @@
 {
     "AWSEBDockerrunVersion": "1",
     "Image": {
-        "Name": "949998518335.dkr.ecr.us-east-2.amazonaws.com/example-app-cicd:latest"
+        "Name": "949998518335.dkr.ecr.us-east-2.amazonaws.com/example-rest-api:latest"
     },
     "Ports": [
         {
