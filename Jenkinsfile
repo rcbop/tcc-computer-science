@@ -50,64 +50,39 @@ pipeline {
         stage('Test Image') {
             steps {
                 script {
-                    def dbContainerId = sh(
-                        script: "docker run -d mongo:latest",
-                        returnStdout: true
-                    )
-                    sh """docker ps --filter "name=test-container" -aq | xargs -r docker rm --force"""
-
-                    sh """
-                    docker run \
-                    -e MONODB_HOST=mongo \
-                    -e APP_ENV=staging \
-                    --name test-container \
-                    --link ${dbContainerId}:mongo \
-                    --entrypoint npm \
-                    ${env.DOCKER_IMAGE_NAME}
-                    test
-
-                    docker cp test-container:/result.xml . || echo 'test report not found'
-                    """
+                    sh 'docker-compose -f docker-compose.test.yml up -d'
+                    
                     junit '**/results/*.xml'
+
+                    sh 'docker-compose -f docker-compose.test.yml down -v'
                 }
             }
         }
 
-        // stage('Docker image publish') {
-        //     steps {
-        //         script {
-        //             def version = readFile('server/VERSION')
-        //             def versions = version.split('\\.')
-        //             def major = versions[0]
-        //             def minor = versions[0] + '.' + versions[1]
+        stage('Docker image publish') {
+            steps {
+                script {
+                    def version = readFile('server/VERSION')
+                    def versions = version.split('\\.')
+                    def major = versions[0]
+                    def minor = versions[0] + '.' + versions[1]
 
-        //             echo '>>>> Publishing new version to docker registry'
-        //             withCredentials(
-        //                 [
-        //                     usernamePassword(
-        //                         credentialsId: 'dkr-registry-pass',
-        //                         passwordVariable: 'DKR_USER',
-        //                         usernameVariable: 'DKR_PASS'
-        //                     )
-        //                 ]
-        //             )
-        //             {
-        //                 docker.withRegistry(
-        //                     "${DOCKER_REGISTRY_REPOSITORY}",
-        //                     "${REGISTRY_CREDENTIAL_ID}"
-        //                 ) 
-        //                 {
-        //                     if (env.BRANCH_NAME == 'master') {
-        //                         apiImage.push()
-        //                         apiImage.push(major)
-        //                         apiImage.push(minor)
-        //                         apiImage.push(patch)
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+                    echo '>>>> Publishing new version to docker registry'
+                    docker.withRegistry(
+                        "${DOCKER_REGISTRY_REPOSITORY}",
+                        "${REGISTRY_CREDENTIAL_ID}"
+                    ) 
+                    {
+                        if (env.BRANCH_NAME == 'master') {
+                            apiImage.push()
+                            apiImage.push(major)
+                            apiImage.push(minor)
+                            apiImage.push(patch)
+                        }
+                    }
+                }
+            }
+        }
 
         // stage("Load configuration") {
         //     steps {
