@@ -150,7 +150,7 @@ pipeline {
                             eb deploy
                             """
                         }
-                        sh "eb setenv MONGO_HOST=${env.MONGODB_HOST}"
+                        sh "eb setenv MONGO_HOST=${env.MONGODB_HOST} -r ${env.AWS_REGION} -e ${branch}"
                     }
                 }
             }
