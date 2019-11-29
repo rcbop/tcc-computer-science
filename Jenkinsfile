@@ -48,7 +48,7 @@ pipeline {
             }
         }
 
-        stage('Test Image') {
+        stage('Test docker image') {
             steps {
                 script {
                     sh 'docker-compose -f docker-compose.test.yml up -d'
@@ -60,7 +60,7 @@ pipeline {
             }
         }
 
-        stage('Docker image publish') {
+        stage('Publish docker image') {
             agent { node { label 'master' } }
             steps {
                 script {
@@ -86,14 +86,19 @@ pipeline {
         }
 
         stage('Deploy frontend') {
-            sh './deploy-frontend.sh'
+            def exitCode = sh(script:'git diff-tree --name-only HEAD | grep frontend', returnStatus: true)
+            if ("${exitCode}" == '0') {
+                echo 'deploying frontend'
+                sh './deploy-frontend.sh'
+            }
         }
 
-        stage("Docker deploy"){
+        stage("Deploy docker in EB"){
             steps {
                 script {
                     if (env.BRANCH_NAME == 'master') {
-                        echo 'deploy elastic beanstalk'
+                        echo 'deploying elastic beanstalk'
+                        //TODO
                     }
                 }
             }
