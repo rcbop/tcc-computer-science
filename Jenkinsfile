@@ -86,10 +86,17 @@ pipeline {
         }
 
         stage('Deploy frontend') {
-            def exitCode = sh(script:'git diff-tree --name-only HEAD | grep frontend', returnStatus: true)
-            if ("${exitCode}" == '0') {
-                echo 'deploying frontend'
-                sh './deploy-frontend.sh'
+            steps {
+                script {
+                    def exitCode = sh(
+                        script:'git diff-tree --name-only HEAD | grep frontend',
+                        returnStatus: true
+                    )
+                    if ("${exitCode}" == '0') {
+                        echo 'deploying frontend'
+                        sh './deploy-frontend.sh'
+                    }
+                }
             }
         }
 
