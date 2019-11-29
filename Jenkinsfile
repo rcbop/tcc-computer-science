@@ -53,7 +53,7 @@ pipeline {
                 script {
                     sh 'docker-compose -f docker-compose.test.yml up -d'
                     
-                    junit '**/results/*.xml', allowEmptyResults: true
+                    junit testResults: '**/results/*.xml', allowEmptyResults: true
 
                     sh 'docker-compose -f docker-compose.test.yml down -v'
                 }
