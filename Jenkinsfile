@@ -15,7 +15,7 @@ pipeline {
     agent { 
         docker {
             image 'exemplo-cicd-slave:latest'
-            args '--group-add 999 -u 112:112 -v /home/ubuntu/.docker:/.docker -v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker'
+            args '--group-add 999 -u 112:116 -v /home/ubuntu/.docker:/.docker -v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker'
         }
     }
 
@@ -99,7 +99,7 @@ pipeline {
                     echo '>>>> Publishing new version to private AWS docker registry'
 
                     sh """
-                    whoami
+                    id
                     ls -la /
                     set +x
                     \$(aws ecr get-login --no-include-email --region ${env.AWS_REGION})
