@@ -2,6 +2,7 @@ env.DOCKER_IMAGE_NAME="exemplo-cicd-slave"
 node {
     stage('List image tags'){
         // list all tags in local registry
-        sh "docker run curx/skopeo inspect --tls-verify=false docker://172.17.0.1:5000/$DOCKER_IMAGE_NAME"
+        // using skopeo wrapped in a docker container
+        sh "docker run --rm curx/skopeo inspect --tls-verify=false docker://172.17.0.1:5000/$DOCKER_IMAGE_NAME"
     }
 }
