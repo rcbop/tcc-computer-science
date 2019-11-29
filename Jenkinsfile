@@ -48,23 +48,20 @@ pipeline {
         stage('Test Image') {
             steps {
                 script {
-                    try {
-                        def mongodb = docker.image('mongo').run()
-                        echo apiImage
-                        sh "docker run ${apiImage.name}"
-                        // apiImage.inside("""
-                        // -e MONGODB_HOST=mongo \
-                        // -e APP_ENV=staging \
-                        // --link ${mongodb.id}:mongo
-                        // """)
-                        // {
-                        //     echo 'Unit tests'
-                        //     // sh 'npm run functional-tests'
-                        //     junit '**/results/*.xml'
-                        // }
-                    } finally {
-                        mongodb.stop()
-                    }
+                    def dbId = sh(script: "docker run -d mongo:latest" rtnStdout:true)
+                    echo dbId
+                    echo apiImage
+                    sh "docker run ${apiImage.name}"
+                    // apiImage.inside("""
+                    // -e MONGODB_HOST=mongo \
+                    // -e APP_ENV=staging \
+                    // --link ${mongodb.id}:mongo
+                    // """)
+                    // {
+                    //     echo 'Unit tests'
+                    //     // sh 'npm run functional-tests'
+                    //     junit '**/results/*.xml'
+                    // }
                 }
             }
         }
