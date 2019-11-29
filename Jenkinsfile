@@ -7,6 +7,7 @@ env.DOCKER_FULL_NAME="${env.DOCKER_IMAGE}:${env.DOCKER_TAG}"
 env.DOCKER_REGISTRY_REPOSITORY="172.17.0.1:5000/${env.DOCKER_FULL_NAME}"
 env.AWS_REGION='us-east-2'
 env.ECR_REGISTRY_ADDRESS="${params.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_REGION}.amazonaws.com"
+env.MONGODB_HOST='3.14.229.209:27017'
 
 String cronString = env.BRANCH_NAME == "master" ? "H/2 * * * *" : ""
 def apiImage
@@ -149,6 +150,7 @@ pipeline {
                             eb deploy
                             """
                         }
+                        sh "eb setenv MONGO_HOST ${env.MONGODB_HOST}"
                     }
                 }
             }
