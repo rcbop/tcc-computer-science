@@ -1,0 +1,10 @@
+node {
+    sh """
+    docker run --rm \
+        --privileged \
+        -v /var/run/docker.sock:/var/run/docker.sock \
+        -v /etc:/etc:ro \
+        -e REMOVE_VOLUMES=1 \
+        spotify/docker-gc
+    """
+}
