@@ -1,4 +1,9 @@
 node {
+    properties(
+        [
+            pipelineTriggers([cron('0 * * * *')])
+        ]
+    )
     sh """
     docker run --rm \
         --privileged \
