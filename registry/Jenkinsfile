@@ -3,6 +3,12 @@ node {
     stage('List image tags'){
         // list all tags in local registry
         // using skopeo wrapped in a docker container
-        sh "docker run --rm curx/skopeo inspect --tls-verify=false docker://172.17.0.1:5000/$DOCKER_IMAGE_NAME"
+        sh """
+            docker run \
+                --rm curx/skopeo \
+                inspect \
+                --tls-verify=false \
+                docker://172.17.0.1:5000/${env.DOCKER_IMAGE_NAME}
+        """
     }
 }

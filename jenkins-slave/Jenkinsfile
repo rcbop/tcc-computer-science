@@ -2,9 +2,19 @@ env.REGISTRY_HOST="localhost"
 env.REGISTRY_PORT="5000"
 env.REGISTRY_ADDRESS="${env.REGISTRY_HOST}:${env.REGISTRY_PORT}"
 env.IMAGE_NAME="exemplo-cicd-slave"
+
 node {
     properties([
-        [$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10']]
+        [
+            $class: 'BuildDiscarderProperty',
+            strategy: [
+                $class: 'LogRotator',
+                artifactDaysToKeepStr: '',
+                artifactNumToKeepStr: '',
+                daysToKeepStr: '',
+                numToKeepStr: '10'
+            ]
+        ]
     ])
     stage("Checkout") {
         checkout scm
