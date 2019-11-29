@@ -46,7 +46,7 @@ pipeline {
         }
 
         stage('Test Image') {
-            agent 'master'
+            agent node { label 'master' }
 
             steps {
                 script {
