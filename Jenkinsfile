@@ -48,19 +48,20 @@ pipeline {
         stage('Test Image') {
             steps {
                 script {
-                    docker.image('mongo').withRun(){ db ->
-                        echo 'inside mongo db'
-                        sh 'ls -la'
+                    try {
+                        def mongodb = docker.image('mongo').run('-d')
                         apiImage.inside("""
-                            -e MONGODB_HOST=mongo \
-                            -e APP_ENV=staging \
-                            --link ${db.id}:mongo
-                            """)
+                        -e MONGODB_HOST=mongo \
+                        -e APP_ENV=staging \
+                        --link ${mongodb.id}:mongo
+                        """)
                         {
                             echo 'Unit tests'
                             // sh 'npm run functional-tests'
                             junit '**/results/*.xml'
                         }
+                    } finally {
+                        mongodb.stop()
                     }
                 }
             }
