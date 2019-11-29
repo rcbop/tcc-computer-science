@@ -9,3 +9,9 @@
   roles:
     - role: geerlingguy.jenkins
       become: yes
+
+  tasks:
+    - name: Copy a logo to userContent dir
+      copy:
+        src: ../jenkins/fbv-wydem.png
+        dest: /var/lib/jenkins/userContent/
