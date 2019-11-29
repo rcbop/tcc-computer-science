@@ -4,7 +4,7 @@ env.AWSCLI_PROFILE=''
 env.DOCKER_IMAGE='example-rest-api'
 env.DOCKER_TAG='latest'
 env.DOCKER_FULL_NAME="${env.DOCKER_IMAGE}:${env.DOCKER_TAG}"
-env.DOCKER_REGISTRY_REPOSITORY="localhost:5000/${env.DOCKER_FULL_NAME}"
+env.DOCKER_REGISTRY_REPOSITORY="172.17.0.1:5000/${env.DOCKER_FULL_NAME}"
 
 String cronString = env.BRANCH_NAME == "master" ? "H/2 * * * *" : ""
 def apiImage
@@ -61,7 +61,7 @@ pipeline {
         }
 
         stage('Publish docker image') {
-            agent { node { label 'master' } }
+            // agent { node { label 'master' } }
             steps {
                 script {
                     def version = readFile('server/VERSION')
