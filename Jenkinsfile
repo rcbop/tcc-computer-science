@@ -141,7 +141,7 @@ pipeline {
                             sh """
                             cd server
                             eb init -p docker ${env.JOB_NAME} --region ${env.AWS_REGION}
-                            eb create --scale 1 ${branch} --region ${env.AWS_REGION}
+                            eb create --single ${branch} --region ${env.AWS_REGION}
                             """
                         } else {
                             sh """
