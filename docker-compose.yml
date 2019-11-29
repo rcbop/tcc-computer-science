@@ -34,8 +34,6 @@ services:
       - --
       - npm
       - start
-    # ports:
-    #   - "3000:3000"
     env_file: server/env/${ENVIRONMENT:-dev}
 
   mongo:

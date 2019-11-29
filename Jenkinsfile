@@ -1,6 +1,9 @@
 // override default profile for aws cli
 // ec2 should use role to deploy
 env.AWSCLI_PROFILE=''
+env.DOCKER_IMAGE='example-rest-api'
+env.DOCKER_TAG='latest'
+env.DOCKER_FULL_NAME="${env.DOCKER_IMAGE}:${env.DOCKER_TAG}"
 
 String cronString = env.BRANCH_NAME == "master" ? "H/2 * * * *" : ""
 def apiImage
@@ -10,7 +13,6 @@ pipeline {
         docker {
             image 'exemplo-cicd-slave:latest'
             args '--group-add 999 -u 112:112 -v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker'
-            // reuseNode true
         }
     }
 
@@ -36,9 +38,9 @@ pipeline {
             steps {
                 script {
                     echo '>>>> Building docker image'
-                    sh 'ls -la'
-                    apiImage = docker.build(
-                        'example-rest-api:latest',
+                    
+                    docker.build(
+                        "${env.DOCKER_FULL_NAME}",
                         'server/'
                     )
                 }
@@ -48,20 +50,25 @@ pipeline {
         stage('Test Image') {
             steps {
                 script {
-                    def dbId = sh(script: "docker run -d mongo:latest", returnStdout:true)
-                    echo "${dbId}"
-                    echo "${apiImage}"
-                    sh "docker run ${apiImage.name}"
-                    // apiImage.inside("""
-                    // -e MONGODB_HOST=mongo \
-                    // -e APP_ENV=staging \
-                    // --link ${mongodb.id}:mongo
-                    // """)
-                    // {
-                    //     echo 'Unit tests'
-                    //     // sh 'npm run functional-tests'
-                    //     junit '**/results/*.xml'
-                    // }
+                    def dbContainerId = sh(
+                        script: "docker run -d mongo:latest",
+                        returnStdout: true
+                    )
+                    sh """docker ps --filter "name=test-container" -aq | xargs -r docker rm --force"""
+
+                    sh """
+                    docker run \
+                    -e MONODB_HOST=mongo \
+                    -e APP_ENV=staging \
+                    --name test-container \
+                    --link ${dbContainerId}:mongo \
+                    --entrypoint npm \
+                    ${env.DOCKER_IMAGE_NAME}
+                    test
+
+                    docker cp test-container:/result.xml . || echo 'test report not found'
+                    """
+                    junit '**/results/*.xml'
                 }
             }
         }
