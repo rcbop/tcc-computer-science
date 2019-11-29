@@ -85,36 +85,18 @@ pipeline {
             }
         }
 
-        // stage("Load configuration") {
-        //     steps {
-        //         script {
-        //             echo '>>>> Loading configuration'
-        //             loadEnvironmentVariables('server/env/dev')
-        //         }
-        //     }
-        // }
-
-        // stage('Deploy frontend') {
-        //     sh './deploy-frontend.sh'
-        // }
+        stage('Deploy frontend') {
+            sh './deploy-frontend.sh'
+        }
 
         // stage("Docker deploy"){
         //     steps {
         //         script {
         //             if (env.BRANCH_NAME == 'master') {
-        //                 echo 'production deployment'
+        //                 echo 'deploy elastic beanstalk'
         //             }
         //         }
         //     }
         // }
     }
 }
-
-// def loadEnvironmentVariables(path){
-//     def props = readProperties file: path
-//     keys = props.keySet()
-//     for(key in keys) {
-//         value = props["${key}"]
-//         env."${key}" = "${value}"
-//     }
-// }
