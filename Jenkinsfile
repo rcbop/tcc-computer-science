@@ -105,7 +105,8 @@ pipeline {
         stage("Deploy docker in EB"){
             steps {
                 script {
-                    def branch = env.GIT_BRANCH.split('/')[0]
+                    def branch = env.GIT_BRANCH.split('/')[0]]
+                    echo branch
                     if (branch == 'master') {
                         echo 'deploying elastic beanstalk'
                         def queryCode = sh(
