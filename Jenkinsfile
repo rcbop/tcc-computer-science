@@ -99,7 +99,8 @@ pipeline {
                     echo '>>>> Publishing new version to private AWS docker registry'
 
                     sh """
-                    ls -la /.docker
+                    whoami
+                    ls -la /
                     set +x
                     \$(aws ecr get-login --no-include-email --region ${env.AWS_REGION})
                     set -x
