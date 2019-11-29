@@ -17,7 +17,7 @@ var ToDoSchema = new mongoose.Schema({
   text: { type: String, required: true },
   done: { type: Boolean, default: false }
 })
-var ToDoModel = mongoose.model('ToDo', ToDoSchema)
+var ToDoModel = mongoose.model('todo', ToDoSchema)
 
 var app = express()
 var router = express.Router()

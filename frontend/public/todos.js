@@ -3,7 +3,7 @@ var app = angular.module('app', ['ngResource'])
 app.controller('TodoCtrl', [ '$scope', '$resource', '$window', function($scope, $resource, $window) {
   var landingURL = $window.location.host
   // var Todo = $resource(landingURL + '/api/v1/todos/:id', { id: '@_id' })
-  var Todo = $resource('/api/v1/ToDo/:id', { id: '@_id' })
+  var Todo = $resource('/api/v1/todo/:id', { id: '@_id' })
   
   var mquery = Todo.query()
   console.log(mquery)
