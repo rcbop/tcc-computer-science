@@ -89,10 +89,10 @@ pipeline {
             steps {
                 script {
                     def exitCode = sh(
-                        script:'git diff-tree --name-only HEAD | grep frontend',
+                        script: 'git diff-tree --name-only HEAD | grep frontend',
                         returnStatus: true
                     )
-                    if ("${exitCode}" == '0') {
+                    if (exitCode.toInteger() == 0) {
                         echo 'deploying frontend'
                         sh './deploy-frontend.sh'
                     }
@@ -105,7 +105,14 @@ pipeline {
                 script {
                     if (env.BRANCH_NAME == 'master') {
                         echo 'deploying elastic beanstalk'
-                        //TODO
+                        def queryCode = sh(
+                            script: "aws elasticbeanstalk describe-applications --output json --region us-east-2 | jq -r '.Applications[].ApplicationName' | grep ${env.JOB_NAME}",
+                            returnStdout: true
+                        )
+                        if (queryCode.toInteger() != 0) {
+                            sh "eb init -p docker ${env.JOB_NAME}"
+                            sh "eb create ${env.BRANCH_NAME}"
+                        }
                     }
                 }
             }
