@@ -1,7 +1,8 @@
 FROM node:alpine
 RUN mkdir /app
 WORKDIR /app
+RUN apk add python make
 COPY . .
-RUN apk add python make && npm install && ls -la src
+RUN npm install
 EXPOSE 3000
 CMD ["npm", "start"]
