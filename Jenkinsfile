@@ -44,6 +44,8 @@ pipeline {
                         "${env.DOCKER_FULL_NAME}",
                         'server/'
                     )
+
+                    sh "env"
                 }
             }
         }
@@ -92,7 +94,7 @@ pipeline {
                         script: 'git diff-tree --name-only HEAD | grep frontend',
                         returnStatus: true
                     )
-                    if (exitCode.toInteger() == 0) {
+                    if (exitCode == 0) {
                         echo 'deploying frontend'
                         sh './deploy-frontend.sh'
                     }
