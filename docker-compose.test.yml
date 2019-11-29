@@ -1,8 +1,6 @@
 version: "2.1"
 services:
   api:
-    container_name: test-api
-    restart: unless-stopped
     build:
       context: server
       dockerfile: Dockerfile
@@ -19,7 +17,6 @@ services:
     env_file: env/${ENVIRONMENT:-dev}
 
   mongo:
-    container_name: mongodb
     image: mongo
     volumes:
       - mongotestdata:/data/db
