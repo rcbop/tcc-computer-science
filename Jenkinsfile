@@ -112,6 +112,8 @@ pipeline {
                         if (queryCode.toInteger() != 0) {
                             sh "eb init -p docker ${env.JOB_NAME}"
                             sh "eb create ${env.BRANCH_NAME}"
+                        } else {
+                            sh "eb deploy"
                         }
                     }
                 }
