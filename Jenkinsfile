@@ -89,14 +89,14 @@ pipeline {
             sh './deploy-frontend.sh'
         }
 
-        // stage("Docker deploy"){
-        //     steps {
-        //         script {
-        //             if (env.BRANCH_NAME == 'master') {
-        //                 echo 'deploy elastic beanstalk'
-        //             }
-        //         }
-        //     }
-        // }
+        stage("Docker deploy"){
+            steps {
+                script {
+                    if (env.BRANCH_NAME == 'master') {
+                        echo 'deploy elastic beanstalk'
+                    }
+                }
+            }
+        }
     }
 }
