@@ -34,14 +34,16 @@ services:
       - --
       - npm
       - start
-    env_file: server/env/${ENVIRONMENT:-dev}
+    # ports:
+    #   - 3000:3000
+    env_file: ./env/${ENVIRONMENT:-dev}
 
   mongo:
     container_name: mongodb
     image: mongo
     volumes:
       - mongodata:/data/db
-    env_file: server/env/${ENVIRONMENT:-dev}
+    env_file: ./env/${ENVIRONMENT:-dev}
 
 volumes:
   mongodata:

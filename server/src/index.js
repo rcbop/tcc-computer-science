@@ -1,39 +1,44 @@
-"use strict";
-var http = require('http')
-var express = require('express')
-var path = require('path')
-var restify = require('express-restify-mongoose')
-var bodyParser = require('body-parser')
-var methodOverride = require('method-override')
-var cors = require('cors')
-var mongoose = require('mongoose')
-var morgan = require('morgan')
+/**
+ * Module Dependencies
+ */
+const config = require('./config');
+const restify = require('restify');
+const mongoose = require('mongoose');
+const restifyPlugins = require('restify-plugins');
+const logger = require('restify-logger');
 
-var mongoHost = process.env.MONGO_HOST
+/**
+  * Initialize Server
+  */
+const server = restify.createServer({
+    name: config.name,
+    version: config.version,
+});
+/**
+  * Middleware
+  */
+logger.format('my-format', ':method :url :status')
+server.use(logger('my-format'));
+server.use(restifyPlugins.jsonBodyParser({ mapParams: true }));
+server.use(restifyPlugins.acceptParser(server.acceptable));
+server.use(restifyPlugins.queryParser({ mapParams: true }));
+server.use(restifyPlugins.fullResponse());
+/**
+  * Start Server, Connect to DB & Require Routes
+  */
+server.listen(config.port, () => {
+    // establish connection to mongodb
+    mongoose.Promise = global.Promise;
+    // mongoose.connect(config.db.uri, { useMongoClient: true });
+    mongoose.connect(config.db.uri);
 
-mongoose.connect('mongodb://' + mongoHost + '/todos')
-
-var ToDoSchema = new mongoose.Schema({
-  text: { type: String, required: true },
-  done: { type: Boolean, default: false }
-})
-var ToDoModel = mongoose.model('todo', ToDoSchema)
-
-var app = express()
-var router = express.Router()
-
-router.use(bodyParser.json())
-router.use(methodOverride())
-router.use(morgan('combined'));
-router.use(cors());
-
-restify.serve(router, ToDoModel)
-router.use('/', router);
-
-app.set('port', process.env.PORT || 3000)
-
-http.createServer(app).listen(app.get('port'), function() {
-  console.log('Express server listening on port ' + app.get('port'))
-  console.log('displaying routes');
-  console.log(router.stack);
-})
+    const db = mongoose.connection;
+    db.on('error', (err) => {
+        console.error(err);
+        process.exit(1);
+    });
+    db.once('open', () => {
+        require('./routes')(server);
+        console.log("Server is listening on port " + config.port );
+    });
+});
