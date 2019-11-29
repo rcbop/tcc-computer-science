@@ -6,7 +6,7 @@ env.DOCKER_TAG='latest'
 env.DOCKER_FULL_NAME="${env.DOCKER_IMAGE}:${env.DOCKER_TAG}"
 env.DOCKER_REGISTRY_REPOSITORY="172.17.0.1:5000/${env.DOCKER_FULL_NAME}"
 env.AWS_REGION='us-east-2'
-env.ECR_REGISTRY_ADDRESS="949998518335.dkr.ecr.${env.AWS_REGION}.amazonaws.com/"
+env.ECR_REGISTRY_ADDRESS="${params.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_REGION}.amazonaws.com"
 
 String cronString = env.BRANCH_NAME == "master" ? "H/2 * * * *" : ""
 def apiImage
