@@ -49,8 +49,8 @@ pipeline {
             steps {
                 script {
                     def dbId = sh(script: "docker run -d mongo:latest", returnStdout:true)
-                    echo dbId
-                    echo apiImage
+                    echo "${dbId}"
+                    echo "${apiImage}"
                     sh "docker run ${apiImage.name}"
                     // apiImage.inside("""
                     // -e MONGODB_HOST=mongo \
