@@ -46,6 +46,8 @@ pipeline {
         }
 
         stage('Test Image') {
+            agent 'master'
+
             steps {
                 script {
                     try {
