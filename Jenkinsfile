@@ -4,6 +4,7 @@ env.AWSCLI_PROFILE=''
 env.DOCKER_IMAGE='example-rest-api'
 env.DOCKER_TAG='latest'
 env.DOCKER_FULL_NAME="${env.DOCKER_IMAGE}:${env.DOCKER_TAG}"
+env.DOCKER_REGISTRY_REPOSITORY="localhost:5000/${env.DOCKER_FULL_NAME}"
 
 String cronString = env.BRANCH_NAME == "master" ? "H/2 * * * *" : ""
 def apiImage
@@ -52,7 +53,7 @@ pipeline {
                 script {
                     sh 'docker-compose -f docker-compose.test.yml up -d'
                     
-                    junit '**/results/*.xml'
+                    junit '**/results/*.xml', allowEmptyResults: true
 
                     sh 'docker-compose -f docker-compose.test.yml down -v'
                 }
@@ -60,6 +61,7 @@ pipeline {
         }
 
         stage('Docker image publish') {
+            agent { node { label 'master' } }
             steps {
                 script {
                     def version = readFile('server/VERSION')
@@ -69,8 +71,7 @@ pipeline {
 
                     echo '>>>> Publishing new version to docker registry'
                     docker.withRegistry(
-                        "${DOCKER_REGISTRY_REPOSITORY}",
-                        "${REGISTRY_CREDENTIAL_ID}"
+                        "${DOCKER_REGISTRY_REPOSITORY}"
                     ) 
                     {
                         if (env.BRANCH_NAME == 'master') {
