@@ -46,22 +46,22 @@ pipeline {
         }
 
         stage('Test Image') {
-            agent { node { label 'master' }}
-
             steps {
                 script {
                     try {
                         def mongodb = docker.image('mongo').run()
-                        apiImage.inside("""
-                        -e MONGODB_HOST=mongo \
-                        -e APP_ENV=staging \
-                        --link ${mongodb.id}:mongo
-                        """)
-                        {
-                            echo 'Unit tests'
-                            // sh 'npm run functional-tests'
-                            junit '**/results/*.xml'
-                        }
+                        echo apiImage
+                        sh "docker run ${apiImage.name}"
+                        // apiImage.inside("""
+                        // -e MONGODB_HOST=mongo \
+                        // -e APP_ENV=staging \
+                        // --link ${mongodb.id}:mongo
+                        // """)
+                        // {
+                        //     echo 'Unit tests'
+                        //     // sh 'npm run functional-tests'
+                        //     junit '**/results/*.xml'
+                        // }
                     } finally {
                         mongodb.stop()
                     }
