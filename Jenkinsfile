@@ -88,8 +88,8 @@ pipeline {
                     echo '>>>> Creating AWS ECR registry if does not exists'
 
                     def queryRepo = sh(
-                        script: "aws ecr describe-repositories --region us-east-2 | grep ${env.JOB_NAME}",
-                        returnStdout: true
+                        script: "aws ecr describe-repositories --region us-east-2 | jq '.repositories[].repositoryName' | grep ${env.JOB_NAME}",
+                        returnStatus: true
                     )
                     if (queryRepo.toInteger() != 0) {
                         sh "aws ecr create-repository --repository-name ${env.JOB_NAME}"
