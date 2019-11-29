@@ -105,7 +105,7 @@ pipeline {
         stage("Deploy docker in EB"){
             steps {
                 script {
-                    if (env.BRANCH_NAME == 'master') {
+                    if (env.GIT_BRANCH == 'origin/master') {
                         echo 'deploying elastic beanstalk'
                         def queryCode = sh(
                             script: "aws elasticbeanstalk describe-applications --output json --region us-east-2 | jq -r '.Applications[].ApplicationName' | grep ${env.JOB_NAME}",
@@ -113,7 +113,7 @@ pipeline {
                         )
                         if (queryCode.toInteger() != 0) {
                             sh "eb init -p docker ${env.JOB_NAME}"
-                            sh "eb create ${env.BRANCH_NAME}"
+                            sh "eb create ${env.GIT_BRANCH}"
                         } else {
                             sh "eb deploy"
                         }
