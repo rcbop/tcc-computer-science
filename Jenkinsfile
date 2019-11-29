@@ -48,7 +48,7 @@ pipeline {
         stage('Test Image') {
             steps {
                 script {
-                    def dbId = sh(script: "docker run -d mongo:latest" rtnStdout:true)
+                    def dbId = sh(script: "docker run -d mongo:latest", rtnStdout:true)
                     echo dbId
                     echo apiImage
                     sh "docker run ${apiImage.name}"
