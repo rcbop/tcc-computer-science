@@ -89,11 +89,11 @@ pipeline {
                     echo '>>>> Creating AWS ECR registry if does not exists'
 
                     def queryRepo = sh(
-                        script: "aws ecr describe-repositories --region ${env.AWS_REGION} | jq '.repositories[].repositoryName' | grep ${env.JOB_NAME}",
+                        script: "aws ecr describe-repositories --region ${env.AWS_REGION} | jq '.repositories[].repositoryName' | grep ${env.DOCKER_IMAGE}",
                         returnStatus: true
                     )
                     if (queryRepo.toInteger() != 0) {
-                        sh "aws ecr create-repository --region ${env.AWS_REGION} --repository-name ${env.JOB_NAME}"
+                        sh "aws ecr create-repository --region ${env.AWS_REGION} --repository-name ${env.DOCKER_IMAGE}"
                     }
 
                     echo '>>>> Publishing new version to private AWS docker registry'
