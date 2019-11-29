@@ -49,7 +49,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        def mongodb = docker.image('mongo').run('-d')
+                        def mongodb = docker.image('mongo').run()
                         apiImage.inside("""
                         -e MONGODB_HOST=mongo \
                         -e APP_ENV=staging \
