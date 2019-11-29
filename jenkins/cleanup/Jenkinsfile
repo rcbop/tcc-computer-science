@@ -1,7 +1,7 @@
 node {
     properties(
         [
-            pipelineTriggers([cron('0 * * * *')]),
+            pipelineTriggers([cron('H H/3 * * *')]),
             [$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10']]
         ]
     )
