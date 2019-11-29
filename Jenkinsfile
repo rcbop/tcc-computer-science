@@ -5,6 +5,7 @@ env.DOCKER_IMAGE='example-rest-api'
 env.DOCKER_TAG='latest'
 env.DOCKER_FULL_NAME="${env.DOCKER_IMAGE}:${env.DOCKER_TAG}"
 env.DOCKER_REGISTRY_REPOSITORY="172.17.0.1:5000/${env.DOCKER_FULL_NAME}"
+env.ECR_REGISTRY_ADDRESS="949998518335.dkr.ecr.us-east-2.amazonaws.com/"
 
 String cronString = env.BRANCH_NAME == "master" ? "H/2 * * * *" : ""
 def apiImage
@@ -71,7 +72,7 @@ pipeline {
                     def major = versions[0]
                     def minor = versions[0] + '.' + versions[1]
 
-                    echo '>>>> Publishing new version to docker registry'
+                    echo '>>>> Publishing new version to private docker registry'
                     docker.withRegistry(
                         "${DOCKER_REGISTRY_REPOSITORY}"
                     ) 
@@ -83,6 +84,26 @@ pipeline {
                             apiImage.push(patch)
                         }
                     }
+
+                    echo '>>>> Creating AWS ECR registry if does not exists'
+
+                    def queryRepo = sh(
+                        script: "aws ecr describe-repositories --region us-east-2 | jq '.repositories[].repositoryName' | grep ${env.JOB_NAME}",
+                        returnStdout: true
+                    )
+                    if (queryRepo.toInteger() != 0) {
+                        sh "aws ecr create-repository --repository-name ${env.JOB_NAME}"
+                    }
+
+                    echo '>>>> Publishing new version to private AWS docker registry'
+
+                    sh """
+                    set +x
+                    \$(aws ecr get-login --no-include-email --region us-east-2) 2>/dev/null
+                    set -x
+                    docker tag ${env.DOCKER_FULL_NAME} ${env.ECR_REGISTRY_ADDRESS}/${env.DOCKER_FULL_NAME}
+                    docker push ${env.ECR_REGISTRY_ADDRESS}/${env.DOCKER_FULL_NAME}
+                    """
                 }
             }
         }
@@ -114,10 +135,16 @@ pipeline {
                             returnStatus: true
                         )
                         if (queryCode.toInteger() != 0) {
-                            sh "eb init -p docker ${env.JOB_NAME}"
-                            sh "eb create ${branch}"
+                            sh """
+                            cd server
+                            eb init -p docker ${env.JOB_NAME} --region us-east-2
+                            eb create --scale 1 ${branch} --region us-east-2
+                            """
                         } else {
-                            sh "eb deploy"
+                            sh """
+                            cd server
+                            eb deploy
+                            """
                         }
                     }
                 }
